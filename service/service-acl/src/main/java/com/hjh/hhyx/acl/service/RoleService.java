@@ -34,4 +34,7 @@ public interface RoleService extends IService<Role> {
      * @param roleId：角色id列表
      */
     void saveUserRoleRealtionShip(Long adminId, Long[] roleId);
+
+
+
 }

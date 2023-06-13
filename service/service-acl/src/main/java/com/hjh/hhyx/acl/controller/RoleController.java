@@ -26,8 +26,10 @@ public class RoleController {
     @Autowired
     private RoleService roleService;
 
+
     /**
      * 获取角色分页列表，包括模糊匹配
+     *
      * @param page
      * @param limit
      * @param roleQueryVo ： 角色名模糊查询
@@ -87,6 +89,8 @@ public class RoleController {
         roleService.removeByIds(idList);
         return Result.ok(null);
     }
+
+
 
 
 }
