@@ -30,6 +30,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(HhyxException.class)
     @ResponseBody
     public Result error(HhyxException hhyxException) {
-        return Result.fail(null);
+        return Result.build(null, hhyxException.getCode(), hhyxException.getMessage());
     }
 }

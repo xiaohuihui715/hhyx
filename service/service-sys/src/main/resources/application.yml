@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: service-sys
+  profiles:
+    active: dev #激活dev文件
