@@ -11,6 +11,7 @@
         <module name="common-util" />
         <module name="model" />
         <module name="service-util" />
+        <module name="service-product" />
         <module name="service-acl" />
       </profile>
     </annotationProcessing>
@@ -21,6 +22,7 @@
       <module name="model" options="-parameters" />
       <module name="service" options="" />
       <module name="service-acl" options="-parameters" />
+      <module name="service-product" options="-parameters" />
       <module name="service-sys" options="-parameters" />
       <module name="service-util" options="-parameters" />
     </option>
