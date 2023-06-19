@@ -1,6 +1,6 @@
 spring:
   application:
-    name: service-sys
+    name: service-search
   profiles:
     active: dev #激活dev文件
   cloud:

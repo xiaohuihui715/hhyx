@@ -17,8 +17,22 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
 
+  rabbitmq:
+    host: 121.36.77.255
+    port: 5672
+    username: guest
+    password: guest
+    publisher-confirm-type: CORRELATED  #发布确认模式，消息是否被成功发送到交换机
+    publisher-returns: true
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 3
+        acknowledge-mode: manual   #消费端手动确认
+
+
 aliyun:
   endpoint: oss-cn-shanghai.aliyuncs.com
-  keyid: LTAI5tLqiX5s14DeBu68CW7J
-  keysecret: LbUlAAtTcUz62D6c7JiOzxrvwaL0Rg
+  keyid: LTAI5tQbEBahrEpZsjG9Zv8G #LTAI5tLqiX5s14DeBu68CW7J
+  keysecret: viZa4AzsUS1OJwVbWJYBP9rdO5jCjc #LbUlAAtTcUz62D6c7JiOzxrvwaL0Rg
   bucketname: hhyx-image

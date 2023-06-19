@@ -2,6 +2,7 @@ package com.hjh.hhyx;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * @author 韩
@@ -9,6 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 //权限管理模块启动类
 @SpringBootApplication
+@EnableDiscoveryClient
 public class ServiceAclApplication {
 
     public static void main(String[] args) {
