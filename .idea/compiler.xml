@@ -9,6 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="common-util" />
         <module name="service-product-client" />
+        <module name="service-gateway" />
         <module name="service-product" />
         <module name="rabbit-util" />
         <module name="service-sys" />
@@ -29,6 +30,7 @@
       <module name="service-acl" options="-parameters" />
       <module name="service-activity" options="-parameters" />
       <module name="service-client" options="" />
+      <module name="service-gateway" options="-parameters" />
       <module name="service-product" options="-parameters" />
       <module name="service-product-client" options="-parameters" />
       <module name="service-search" options="-parameters" />

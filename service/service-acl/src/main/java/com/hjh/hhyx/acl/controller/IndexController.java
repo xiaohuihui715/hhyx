@@ -15,7 +15,7 @@ import java.util.Map;
 @Api(tags = "登录接口")
 @RestController
 @RequestMapping("/admin/acl/index")
-@CrossOrigin//解决跨域访问问题
+//@CrossOrigin//解决跨域访问问题
 public class IndexController {
 
     /**

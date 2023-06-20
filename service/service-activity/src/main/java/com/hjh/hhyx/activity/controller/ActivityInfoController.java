@@ -25,7 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/admin/activity/activityInfo")
-@CrossOrigin
+//@CrossOrigin
 public class ActivityInfoController {
     @Autowired
     private ActivityInfoService activityInfoService;

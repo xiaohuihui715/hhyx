@@ -48,7 +48,7 @@ public class FileUploadServiceImpl implements FileUploadService {
             // 关闭OSSClient。
             ossClient.shutdown();
             //上传之后文件路径
-            // https://ssyx-atguigu.oss-cn-beijing.aliyuncs.com/01.jpg
+            // https://hhyx-atguigu.oss-cn-beijing.aliyuncs.com/01.jpg
             String url = "https://"+bucketName+"."+endPoint+"/"+fileName;
             //返回
             return url;
