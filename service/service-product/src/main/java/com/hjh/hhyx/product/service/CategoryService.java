@@ -23,4 +23,6 @@ public interface CategoryService extends IService<Category> {
 
     //查询所有商品分类
     List<Category> findAllList();
+
+    List<Category> findCategoryList(List<Long> categoryIdList);
 }

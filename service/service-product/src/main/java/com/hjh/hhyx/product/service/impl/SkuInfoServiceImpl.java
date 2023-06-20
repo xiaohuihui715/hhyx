@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -233,6 +234,25 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         skuInfoUp.setId(skuId);
         skuInfoUp.setIsNewPerson(status);
         skuInfoMapper.updateById(skuInfoUp);
+    }
+
+    //批量获取sku信息
+    @Override
+    public List<SkuInfo> findSkuInfoList(List<Long> skuIdList) {
+//        return null;
+        List<SkuInfo> list = new ArrayList<>();
+        for (Long id : skuIdList) {
+            list.add(skuInfoMapper.selectOne(new LambdaQueryWrapper<SkuInfo>().eq(SkuInfo::getId, id)));
+        }
+        return list;
+    }
+
+    //根据关键字获取sku列表
+    @Override
+    public List<SkuInfo> findSkuInfoByKeyword(String keyword) {
+        LambdaQueryWrapper<SkuInfo> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(SkuInfo::getSkuName, keyword);
+        return baseMapper.selectList(queryWrapper);
     }
 
 }

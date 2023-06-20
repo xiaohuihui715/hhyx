@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("api/search/sku")
+
 public class SkuSearchController {
     @Autowired
     private SkuSearchService skuSearchService;

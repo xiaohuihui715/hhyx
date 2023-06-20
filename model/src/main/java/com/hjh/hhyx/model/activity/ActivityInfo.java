@@ -53,6 +53,6 @@ public class ActivityInfo extends BaseEntity {
 	private Date createTime;
 
 	@TableField(exist = false)
-	private String activityTypeString;
+	private String activityTypeString;//优惠活动类型对应的字符串
 }
 

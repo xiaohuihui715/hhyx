@@ -11,6 +11,7 @@ import com.hjh.hhyx.vo.product.CategoryQueryVo;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,8 +30,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     public IPage<Category> selectPage(Page<Category> pageParam, CategoryQueryVo categoryQueryVo) {
         String name = categoryQueryVo.getName();
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
-        if(!StringUtils.isEmpty(name)) {
-            queryWrapper.like(Category::getName,name);
+        if (!StringUtils.isEmpty(name)) {
+            queryWrapper.like(Category::getName, name);
         }
         IPage<Category> categoryPage = baseMapper.selectPage(pageParam, queryWrapper);
         return categoryPage;
@@ -42,5 +43,14 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.orderByAsc(Category::getSort);
         return this.list(queryWrapper);
+    }
+
+    @Override
+    public List<Category> findCategoryList(List<Long> categoryIdList) {
+        List<Category> list = new ArrayList<>();
+        for (Long id : categoryIdList) {
+            list.add(baseMapper.selectOne(new LambdaQueryWrapper<Category>().eq(Category::getId, id)));
+        }
+        return list;
     }
 }

@@ -24,7 +24,7 @@ public class ActivityRule extends BaseEntity {
 	
 	private static final long serialVersionUID = 1L;
 	
-	@ApiModelProperty(value = "类型")
+	@ApiModelProperty(value = "活动id")
 	@TableField("activity_id")
 	private Long activityId;
 

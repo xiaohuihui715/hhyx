@@ -7,6 +7,8 @@ import com.hjh.hhyx.model.product.SkuInfo;
 import com.hjh.hhyx.vo.product.SkuInfoQueryVo;
 import com.hjh.hhyx.vo.product.SkuInfoVo;
 
+import java.util.List;
+
 /**
  * <p>
  * sku信息 服务类
@@ -37,4 +39,10 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     //新人专享
     void isNewPerson(Long skuId, Integer status);
+
+    //批量获取sku信息
+    List<SkuInfo> findSkuInfoList(List<Long> skuIdList);
+
+    //根据关键字获取sku列表
+    List<SkuInfo> findSkuInfoByKeyword(String keyword);
 }
