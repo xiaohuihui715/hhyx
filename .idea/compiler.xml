@@ -10,14 +10,16 @@
         <module name="common-util" />
         <module name="service-product-client" />
         <module name="service-gateway" />
-        <module name="service-product" />
-        <module name="rabbit-util" />
+        <module name="service-home" />
         <module name="service-sys" />
+        <module name="service-util" />
+        <module name="service-acl" />
+        <module name="service-product" />
+        <module name="service-user" />
+        <module name="rabbit-util" />
         <module name="service-search" />
         <module name="model" />
-        <module name="service-util" />
         <module name="service-activity" />
-        <module name="service-acl" />
       </profile>
     </annotationProcessing>
   </component>
@@ -31,10 +33,12 @@
       <module name="service-activity" options="-parameters" />
       <module name="service-client" options="" />
       <module name="service-gateway" options="-parameters" />
+      <module name="service-home" options="-parameters" />
       <module name="service-product" options="-parameters" />
       <module name="service-product-client" options="-parameters" />
       <module name="service-search" options="-parameters" />
       <module name="service-sys" options="-parameters" />
+      <module name="service-user" options="-parameters" />
       <module name="service-util" options="-parameters" />
     </option>
   </component>
