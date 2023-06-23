@@ -4,6 +4,7 @@ import com.hjh.hhyx.model.product.Category;
 import com.hjh.hhyx.model.product.SkuInfo;
 import com.hjh.hhyx.product.service.CategoryService;
 import com.hjh.hhyx.product.service.SkuInfoService;
+import com.hjh.hhyx.vo.product.SkuInfoVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -56,5 +57,23 @@ public class ProductInnnerController {
     @PostMapping("inner/findCategoryList")
     public List<Category> findCategoryList(@RequestBody List<Long> categoryIdList) {
         return categoryService.findCategoryList(categoryIdList);
+    }
+
+    @ApiOperation(value = "获取分类信息")
+    @GetMapping("inner/findAllCategoryList")
+    public List<Category> findAllCategoryList() {
+        return categoryService.findAllList();
+    }
+
+    @ApiOperation(value = "获取新人专享")
+    @GetMapping("inner/findNewPersonSkuInfoList")
+    public List<SkuInfo> findNewPersonSkuInfoList() {
+        return skuInfoService.findNewPersonList();
+    }
+
+    @ApiOperation(value = "根据skuId获取sku信息")
+    @GetMapping("inner/getSkuInfoVo/{skuId}")
+    public SkuInfoVo getSkuInfoVo(@PathVariable("skuId") Long skuId) {
+        return skuInfoService.getSkuInfoVo(skuId);
     }
 }

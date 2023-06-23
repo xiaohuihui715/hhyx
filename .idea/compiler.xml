@@ -9,13 +9,17 @@
         <outputRelativeToContentRoot value="true" />
         <module name="common-util" />
         <module name="service-product-client" />
+        <module name="service-search-client" />
         <module name="service-gateway" />
         <module name="service-home" />
         <module name="service-sys" />
+        <module name="service-user-client" />
         <module name="service-util" />
+        <module name="service-activity-client" />
         <module name="service-acl" />
         <module name="service-product" />
         <module name="service-user" />
+        <module name="service-cart" />
         <module name="rabbit-util" />
         <module name="service-search" />
         <module name="model" />
@@ -31,14 +35,18 @@
       <module name="service" options="" />
       <module name="service-acl" options="-parameters" />
       <module name="service-activity" options="-parameters" />
+      <module name="service-activity-client" options="-parameters" />
+      <module name="service-cart" options="-parameters" />
       <module name="service-client" options="" />
       <module name="service-gateway" options="-parameters" />
       <module name="service-home" options="-parameters" />
       <module name="service-product" options="-parameters" />
       <module name="service-product-client" options="-parameters" />
       <module name="service-search" options="-parameters" />
+      <module name="service-search-client" options="-parameters" />
       <module name="service-sys" options="-parameters" />
       <module name="service-user" options="-parameters" />
+      <module name="service-user-client" options="-parameters" />
       <module name="service-util" options="-parameters" />
     </option>
   </component>

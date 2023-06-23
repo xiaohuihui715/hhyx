@@ -8,11 +8,13 @@ import com.hjh.hhyx.activity.mapper.ActivityInfoMapper;
 import com.hjh.hhyx.activity.mapper.ActivityRuleMapper;
 import com.hjh.hhyx.activity.mapper.ActivitySkuMapper;
 import com.hjh.hhyx.activity.service.ActivityInfoService;
+import com.hjh.hhyx.activity.service.CouponInfoService;
 import com.hjh.hhyx.client.product.ProductFeignClient;
 import com.hjh.hhyx.enums.ActivityType;
 import com.hjh.hhyx.model.activity.ActivityInfo;
 import com.hjh.hhyx.model.activity.ActivityRule;
 import com.hjh.hhyx.model.activity.ActivitySku;
+import com.hjh.hhyx.model.activity.CouponInfo;
 import com.hjh.hhyx.model.product.SkuInfo;
 import com.hjh.hhyx.vo.activity.ActivityRuleVo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,9 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
 
     @Autowired
     private ProductFeignClient productFeignClient;
+
+    @Autowired
+    private CouponInfoService couponInfoService;
 
     //优惠活动列表方法
     @Override
@@ -138,6 +143,29 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
         return activityRuleList;
     }
 
+    //根据skuId列表获取促销信息
+    @Override
+    public Map<Long, List<String>> findActivity(List<Long> skuIdList) {
+        Map<Long, List<String>> result = new HashMap<>();
+        //skuIdList遍历，得到每个skuId
+        skuIdList.forEach(skuId -> {
+            //根据skuId进行查询，查询sku对应活动里面规则列表
+            List<ActivityRule> activityRuleList =
+                    baseMapper.selectActivityRuleList(skuId);
+            //数据封装，规则名称
+            if (!CollectionUtils.isEmpty(activityRuleList)) {
+                List<String> ruleList = new ArrayList<>();
+                //把规则名称处理
+                for (ActivityRule activityRule : activityRuleList) {
+                    ruleList.add(this.getRuleDesc(activityRule));
+                }
+                result.put(skuId, ruleList);
+            }
+        });
+        return result;
+    }
+
+    //构造规则名称的方法
     private String getRuleDesc(ActivityRule activityRule) {
         ActivityType activityType = activityRule.getActivityType();
         StringBuffer ruleDesc = new StringBuffer();
@@ -157,5 +185,20 @@ public class ActivityInfoServiceImpl extends ServiceImpl<ActivityInfoMapper, Act
                     .append("折");
         }
         return ruleDesc.toString();
+    }
+
+
+    @Override
+    public Map<String, Object> findActivityAndCoupon(Long skuId, Long userId) {
+        //一个sku只能有一个促销活动，一个活动有多个活动规则（如满赠，满100送10，满500送50）
+        List<ActivityRule> activityRuleList = this.findActivityRule(skuId);
+
+        //获取优惠券信息
+        List<CouponInfo> couponInfoList = couponInfoService.findCouponInfo(skuId, userId);
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("activityRuleList", activityRuleList);
+        map.put("couponInfoList", couponInfoList);
+        return map;
     }
 }

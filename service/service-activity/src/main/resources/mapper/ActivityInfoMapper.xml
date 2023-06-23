@@ -33,4 +33,6 @@
           and now() between info.start_time and info.end_time
         order by rule.condition_amount desc, rule.condition_num desc
     </select>
+
+
 </mapper>

@@ -2,6 +2,7 @@ package com.hjh.hhyx.client.product;
 
 import com.hjh.hhyx.model.product.Category;
 import com.hjh.hhyx.model.product.SkuInfo;
+import com.hjh.hhyx.vo.product.SkuInfoVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,4 +50,26 @@ public interface ProductFeignClient {
     @PostMapping("/api/product/inner/findCategoryList")
     List<Category> findCategoryList(@RequestBody List<Long> categoryIdList);
 
+
+    /**
+     * 获取分类信息
+     * @return
+     */
+    @GetMapping("/api/product/inner/findAllCategoryList")
+    List<Category> findAllCategoryList();
+
+    /**
+     * 获取新人专享
+     * @return
+     */
+    @GetMapping("/api/product/inner/findNewPersonSkuInfoList")
+    List<SkuInfo> findNewPersonSkuInfoList();
+
+    /**
+     * 根据skuid获取sku详情信息
+     * @param skuId
+     * @return
+     */
+    @GetMapping("/api/product/inner/getSkuInfoVo/{skuId}")
+    SkuInfoVo getSkuInfoVo(@PathVariable("skuId") Long skuId);
 }

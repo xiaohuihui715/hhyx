@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -145,5 +146,13 @@ public class CouponInfoServiceImpl extends ServiceImpl<CouponInfoMapper, CouponI
         QueryWrapper<CouponInfo> couponInfoQueryWrapper = new QueryWrapper<>();
         couponInfoQueryWrapper.like("coupon_name",keyword);
         return couponInfoMapper.selectList(couponInfoQueryWrapper);
+    }
+
+
+    @Override
+    public List<CouponInfo> findCouponInfo(Long skuId, Long userId) {
+        SkuInfo skuInfo = productFeignClient.getSkuInfo(skuId);
+        if(null == skuInfo) return new ArrayList<>();
+        return couponInfoMapper.selectCouponInfoList(skuInfo.getId(), skuInfo.getCategoryId(), userId);
     }
 }

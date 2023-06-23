@@ -255,4 +255,17 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         return baseMapper.selectList(queryWrapper);
     }
 
+    @Override
+    public List<SkuInfo> findNewPersonList() {
+        //显示三条新人专享的数据
+        Page<SkuInfo> pageParm = new Page<>(1, 3);
+        LambdaQueryWrapper<SkuInfo> wrapper = new LambdaQueryWrapper<SkuInfo>()
+                .eq(SkuInfo::getIsNewPerson, 1)
+                .eq(SkuInfo::getPublishStatus, 1)
+                .orderByDesc(SkuInfo::getStock);
+        Page<SkuInfo> page = baseMapper.selectPage(pageParm, wrapper);
+        List<SkuInfo> skuInfoList = page.getRecords();
+        return skuInfoList;
+    }
+
 }

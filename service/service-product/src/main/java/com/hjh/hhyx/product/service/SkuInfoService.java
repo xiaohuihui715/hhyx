@@ -45,4 +45,6 @@ public interface SkuInfoService extends IService<SkuInfo> {
 
     //根据关键字获取sku列表
     List<SkuInfo> findSkuInfoByKeyword(String keyword);
+
+    List<SkuInfo> findNewPersonList();
 }
