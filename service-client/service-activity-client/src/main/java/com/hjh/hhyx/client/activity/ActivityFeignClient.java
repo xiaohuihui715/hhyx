@@ -1,5 +1,7 @@
 package com.hjh.hhyx.client.activity;
 
+import com.hjh.hhyx.model.order.CartInfo;
+import com.hjh.hhyx.vo.order.OrderConfirmVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,4 +32,8 @@ public interface ActivityFeignClient {
      */
     @GetMapping("/api/activity/inner/findActivityAndCoupon/{skuId}/{userId}")
     Map<String, Object> findActivityAndCoupon(@PathVariable Long skuId, @PathVariable("userId") Long userId);
+
+    @PostMapping("/api/activity/inner/findCartActivityAndCoupon/{userId}")
+    OrderConfirmVo findCartActivityAndCoupon(@RequestBody List<CartInfo> cartInfoList,
+                                             @PathVariable("userId") Long userId);
 }

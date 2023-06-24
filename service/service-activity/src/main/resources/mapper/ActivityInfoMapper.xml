@@ -35,4 +35,21 @@
     </select>
 
 
+    <select id="selectCartActivityList" resultMap="ActivitySkuMap">
+        select
+        info.id as activityId,
+        sku.sku_id as skuId
+        from activity_info info
+        inner join activity_sku sku on info.id = sku.activity_id
+        <where>
+            and sku.sku_id in
+            <foreach collection="skuIdList" item="item" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+            and now() between info.start_time and info.end_time
+        </where>
+    </select>
+
+
+
 </mapper>

@@ -34,6 +34,6 @@ spring:
 
 aliyun:
   endpoint: oss-cn-shanghai.aliyuncs.com
-  keyid: LTAI5tFjfPZsYCNxG2HFZqhB #LTAI5tQbEBahrEpZsjG9Zv8G
-  keysecret: tXAspiN1BSlHRb7jbSYIkSfrlR2HIn #viZa4AzsUS1OJwVbWJYBP9rdO5jCjc
+  keyid: 
+  keysecret:
   bucketname: hhyx-image
