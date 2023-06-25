@@ -42,4 +42,10 @@ public interface CartInfoService {
     void checkAllCart(Long userId, Integer isChecked);
 
     void batchCheckCart(List<Long> skuIdList, Long userId, Integer isChecked);
+
+    //获取购物车选中列表
+    List<CartInfo> getCartCheckedList(Long userId);
+
+    //根据用户id删除选中的购物车
+    void deleteCartChecked(Long userId);
 }

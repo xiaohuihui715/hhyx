@@ -5,6 +5,7 @@ import com.hjh.hhyx.model.product.SkuInfo;
 import com.hjh.hhyx.product.service.CategoryService;
 import com.hjh.hhyx.product.service.SkuInfoService;
 import com.hjh.hhyx.vo.product.SkuInfoVo;
+import com.hjh.hhyx.vo.product.SkuStockLockVo;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -75,5 +76,11 @@ public class ProductInnnerController {
     @GetMapping("inner/getSkuInfoVo/{skuId}")
     public SkuInfoVo getSkuInfoVo(@PathVariable("skuId") Long skuId) {
         return skuInfoService.getSkuInfoVo(skuId);
+    }
+
+    @ApiOperation(value = "锁定库存")
+    @PostMapping("inner/checkAndLock/{orderNo}")
+    public Boolean checkAndLock(@RequestBody List<SkuStockLockVo> skuStockLockVoList, @PathVariable String orderNo) {
+        return skuInfoService.checkAndLock(skuStockLockVoList, orderNo);
     }
 }

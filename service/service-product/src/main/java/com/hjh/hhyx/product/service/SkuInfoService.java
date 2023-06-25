@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.hjh.hhyx.model.product.SkuInfo;
 import com.hjh.hhyx.vo.product.SkuInfoQueryVo;
 import com.hjh.hhyx.vo.product.SkuInfoVo;
+import com.hjh.hhyx.vo.product.SkuStockLockVo;
 
 import java.util.List;
 
@@ -47,4 +48,7 @@ public interface SkuInfoService extends IService<SkuInfo> {
     List<SkuInfo> findSkuInfoByKeyword(String keyword);
 
     List<SkuInfo> findNewPersonList();
+
+    //检查库存并锁定
+    Boolean checkAndLock(List<SkuStockLockVo> skuStockLockVoList, String orderNo);
 }

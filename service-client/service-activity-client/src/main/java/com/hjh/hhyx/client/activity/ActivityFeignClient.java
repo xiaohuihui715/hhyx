@@ -1,6 +1,8 @@
 package com.hjh.hhyx.client.activity;
 
+import com.hjh.hhyx.model.activity.CouponInfo;
 import com.hjh.hhyx.model.order.CartInfo;
+import com.hjh.hhyx.vo.order.CartInfoVo;
 import com.hjh.hhyx.vo.order.OrderConfirmVo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,4 +38,18 @@ public interface ActivityFeignClient {
     @PostMapping("/api/activity/inner/findCartActivityAndCoupon/{userId}")
     OrderConfirmVo findCartActivityAndCoupon(@RequestBody List<CartInfo> cartInfoList,
                                              @PathVariable("userId") Long userId);
+
+
+    @PostMapping("/api/activity/inner/findCartActivityList")
+    public List<CartInfoVo> findCartActivityList(@RequestBody List<CartInfo> cartInfoList);
+
+
+    @PostMapping("/api/activity/inner/findRangeSkuIdList/{couponId}")
+    public CouponInfo findRangeSkuIdList(@RequestBody List<CartInfo> cartInfoList,
+                                         @PathVariable("couponId") Long couponId);
+
+    @GetMapping("/api/activity/inner/updateCouponInfoUseStatus/{couponId}/{userId}/{orderId}")
+    public Boolean updateCouponInfoUseStatus(@PathVariable("couponId") Long couponId,
+                                             @PathVariable("userId") Long userId,
+                                             @PathVariable("orderId") Long orderId);
 }

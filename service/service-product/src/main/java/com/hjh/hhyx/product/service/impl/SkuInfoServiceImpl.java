@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.hjh.hhyx.common.constant.RedisConst;
+import com.hjh.hhyx.common.exception.HhyxException;
+import com.hjh.hhyx.common.result.ResultCodeEnum;
 import com.hjh.hhyx.model.product.SkuAttrValue;
 import com.hjh.hhyx.model.product.SkuImage;
 import com.hjh.hhyx.model.product.SkuInfo;
@@ -17,8 +20,12 @@ import com.hjh.hhyx.product.service.SkuInfoService;
 import com.hjh.hhyx.product.service.SkuPosterService;
 import com.hjh.hhyx.vo.product.SkuInfoQueryVo;
 import com.hjh.hhyx.vo.product.SkuInfoVo;
+import com.hjh.hhyx.vo.product.SkuStockLockVo;
+import org.redisson.api.RLock;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -52,6 +59,13 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
 
     @Autowired
     private RabbitService rabbitService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
+
 
     //获取sku分页列表
     @Override
@@ -266,6 +280,74 @@ public class SkuInfoServiceImpl extends ServiceImpl<SkuInfoMapper, SkuInfo> impl
         Page<SkuInfo> page = baseMapper.selectPage(pageParm, wrapper);
         List<SkuInfo> skuInfoList = page.getRecords();
         return skuInfoList;
+    }
+
+
+    /**
+     * 验证并锁定库存
+     *
+     * @param skuStockLockVoList
+     * @param orderToken
+     * @return
+     */
+    @Transactional(rollbackFor = {Exception.class})
+    @Override
+    public Boolean checkAndLock(List<SkuStockLockVo> skuStockLockVoList,
+                                String orderToken) {
+        if (CollectionUtils.isEmpty(skuStockLockVoList)) {
+            throw new HhyxException(ResultCodeEnum.DATA_ERROR);
+        }
+
+        // 1.遍历所有商品，验库存并锁库存，要具备原子性
+        skuStockLockVoList.forEach(skuStockLockVo -> {
+            checkLock(skuStockLockVo);
+        });
+
+        // 2.只要有一个商品锁定失败，所有锁定成功的商品要解锁库存
+        if (skuStockLockVoList.stream().anyMatch(skuStockLockVo -> !skuStockLockVo.getIsLock())) {
+            // 获取所有锁定成功的商品，遍历解锁库存
+            skuStockLockVoList.stream().filter(SkuStockLockVo::getIsLock).forEach(skuStockLockVo -> {
+                skuInfoMapper.unlockStock(skuStockLockVo.getSkuId(), skuStockLockVo.getSkuNum());
+            });
+            // 响应锁定状态
+            return false;
+        }
+
+        // 3.如果所有商品都锁定成功的情况下，需要缓存锁定信息到redis。以方便将来解锁库存 或者 减库存
+        // 以orderToken作为key，以lockVos锁定信息作为value
+        this.redisTemplate.opsForValue().set(RedisConst.SROCK_INFO + orderToken, skuStockLockVoList);
+
+        // 锁定库存成功之后，定时解锁库存。
+        //this.rabbitTemplate.convertAndSend("ORDER_EXCHANGE", "stock.ttl", orderToken);
+        return true;
+    }
+
+    private void checkLock(SkuStockLockVo skuStockLockVo) {
+        //公平锁，就是保证客户端获取锁的顺序，跟他们请求获取锁的顺序，是一样的。
+        // 公平锁需要排队
+        // ，谁先申请获取这把锁，
+        // 谁就可以先获取到这把锁，是按照请求的先后顺序来的。
+        RLock rLock = this.redissonClient
+                .getFairLock(RedisConst.SKUKEY_PREFIX + skuStockLockVo.getSkuId());
+        rLock.lock();//加锁
+
+        try {
+            // 验库存：查询，返回的是满足要求的库存列表
+            SkuInfo skuInfo = skuInfoMapper.checkStock(skuStockLockVo.getSkuId(), skuStockLockVo.getSkuNum());
+            // 如果没有一个仓库满足要求，这里就验库存失败
+            if (skuInfo == null) {
+                skuStockLockVo.setIsLock(false);
+                return;
+            }
+
+            // 锁库存：更新
+            Integer row = skuInfoMapper.lockStock(skuStockLockVo.getSkuId(), skuStockLockVo.getSkuNum());
+            if (row == 1) {
+                skuStockLockVo.setIsLock(true);
+            }
+        } finally {
+            rLock.unlock();//解锁
+        }
     }
 
 }

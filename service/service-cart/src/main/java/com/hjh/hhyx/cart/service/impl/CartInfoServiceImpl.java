@@ -20,6 +20,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @author 韩
@@ -200,6 +201,35 @@ public class CartInfoServiceImpl implements CartInfoService {
             CartInfo cartInfo = hashOperations.get(skuId.toString());
             cartInfo.setIsChecked(isChecked);
             hashOperations.put(cartInfo.getSkuId().toString(), cartInfo);
+        });
+    }
+
+    @Override
+    public List<CartInfo> getCartCheckedList(Long userId) {
+        BoundHashOperations<String, String, CartInfo> boundHashOps =
+                this.redisTemplate.boundHashOps(this.getCartKey(userId));
+        List<CartInfo> cartInfoCheckList = boundHashOps.values().stream().filter((cartInfo) -> {
+            return cartInfo.getIsChecked().intValue() == 1;
+        }).collect(Collectors.toList());
+        return cartInfoCheckList;
+    }
+
+    /**
+     * 根据用户id删除选中的购物车数据
+     * @param userId
+     */
+    @Override
+    public void deleteCartChecked(Long userId) {
+        List<CartInfo> cartInfoList = this.getCartCheckedList(userId);
+        //查询用户购物车所有的skuid
+        List<Long> skuIdList = cartInfoList.stream().map(item -> item.getSkuId()).collect(Collectors.toList());
+
+        String cartKey = getCartKey(userId);
+        //获取缓存对象
+        BoundHashOperations<String, String, CartInfo> hashOperations = redisTemplate.boundHashOps(cartKey);
+        //删除选中的skuid
+        skuIdList.forEach(skuId -> {
+            hashOperations.delete(skuId.toString());
         });
     }
 }
