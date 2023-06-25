@@ -1,5 +1,5 @@
 server:
-  port: 8209
+  port: 8210
 mybatis-plus:
   type-enums-package: com.hjh.hhyx.enums
   configuration:
@@ -21,6 +21,13 @@ spring:
     port: 5672
     username: guest
     password: guest
+    publisher-confirm-type: CORRELATED
+    publisher-returns: true
+    listener:
+      simple:
+        prefetch: 1
+        concurrency: 3
+        acknowledge-mode: manual
   redis:
     host: localhost
     port: 6379
@@ -46,7 +53,15 @@ spring:
       max-lifetime: 540000
       maximum-pool-size: 5
       minimum-idle: 3
-      pool-name: hhHikariPool
+      pool-name: GuliHikariPool
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
     time-zone: GMT+8
+# 微信
+weixin:
+  #小程序微信公众平台appId
+  appid: wxcc651fcbab275e33
+  partner: 1481962542
+  partnerkey: MXb72b9RfshXZD4FRGV5KLqmv5bx9LT9
+  notifyurl: http://gmall-prod.atguigu.cn/api/payment/weixin/notify
+  cert: D:\yygh_work\yygh_parent\service\service-order\src\main\resources\apiclient_cert.p12

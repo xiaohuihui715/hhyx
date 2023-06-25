@@ -192,6 +192,15 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
         return orderInfo;
     }
 
+    @Override
+    public OrderInfo getOrderInfoByOrderNo(String orderNo) {
+        OrderInfo orderInfo = baseMapper.selectOne(
+                new LambdaQueryWrapper<OrderInfo>()
+                        .eq(OrderInfo::getOrderNo, orderNo)
+        );
+        return orderInfo;
+    }
+
     @Transactional(rollbackFor = {Exception.class})
     public Long saveOrder(OrderSubmitVo orderSubmitVo, List<CartInfo> cartInfoList) {
         Long userId = AuthContextHolder.getUserId();
@@ -451,5 +460,33 @@ public class OrderInfoServiceImpl extends ServiceImpl<OrderInfoMapper, OrderInfo
             couponInfoSplitAmountMap.put("coupon:total", couponInfo.getAmount());
         }
         return couponInfoSplitAmountMap;
+    }
+
+
+    @Override
+    public void orderPay(String orderNo) {
+        OrderInfo orderInfo = this.getOrderInfoByOrderNo(orderNo);
+        if(null == orderInfo || orderInfo.getOrderStatus() != OrderStatus.UNPAID) return;
+
+        //更改订单状态
+        this.updateOrderStatus(orderInfo.getId(),  ProcessStatus.WAITING_DELEVER);
+
+        //扣减库存
+        rabbitService.sendMessage(MQConstant.EXCHANGE_ORDER_DIRECT, MQConstant.ROUTING_MINUS_STOCK, orderNo);
+    }
+
+    public void updateOrderStatus(Long orderId, ProcessStatus processStatus) {
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setId(orderId);
+        orderInfo.setProcessStatus(processStatus);
+        orderInfo.setOrderStatus(processStatus.getOrderStatus());
+        if(processStatus == ProcessStatus.WAITING_DELEVER) {
+            orderInfo.setPaymentTime(new Date());
+        } else if(processStatus == ProcessStatus.WAITING_LEADER_TAKE) {
+            orderInfo.setDeliveryTime(new Date());
+        } else if(processStatus == ProcessStatus.WAITING_USER_TAKE) {
+            orderInfo.setTakeTime(new Date());
+        }
+        orderInfoMapper.updateById(orderInfo);
     }
 }
